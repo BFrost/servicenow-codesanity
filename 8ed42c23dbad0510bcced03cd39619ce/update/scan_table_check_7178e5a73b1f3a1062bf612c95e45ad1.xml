@@ -7,7 +7,7 @@
         <description>New capabilities require new guardrails on how to use them. The platform's AI Agent data model allows the re-use of AI Agent Tools across multiple AI Agents. The table sn_aia_agent_tool_m2m connect the actual tool record with AI Agents as a many-to-many relationship.&#13;
 Based on real world project experience re-using tools across multiple agents is however not supporting maintainability and test-ability of a system. Testing AI Agents in itself is a new discipline and various ideas and patterns are emerging to validate the results of AI Agents. Due to the non-deterministic nature and the influence of the input data, the prompt itself and the information fed into the AI Agent through Tools, this easily becomes a three body problem (i.e. hard if not even impossible to solve).&#13;
 To reduce the level of complexity and increase de-coupling, the re-use of Tools across multiple AI Agents should be avoided - as a change in one Tool would directly impact the output of multiple AI Agents.&#13;
-This guidance is implemented through a naming convention that includes the AI Agent name in the name of the Tool and the "Agent Tool" m2m record.</description>
+This guidance is implemented through a naming convention that includes the AI Agent name in the name of the Tool and the "Agent Tool" m2m record if multiple agents are contained in a single application.</description>
         <documentation_url/>
         <finding_type>scan_finding</finding_type>
         <name>CodeSanity - AI Agent Tool Structure</name>
@@ -41,6 +41,16 @@ If a Tool is re-used across multiple AI Agents, the Tool must be copied and henc
 			engine.finding.increment();
 			return;
 		}
+
+		// The naming convention only applies if there are multiple agents in the same scope
+		var grAgents = new GlideRecord('sn_aia_agent');
+		grAgents.addQuery('sys_scope','=',current.sys_scope);
+		grAgents.query();
+		if (grAgents.getRowCount() < 2)
+		{
+			return;
+		} 
+
 		var strToolName = GetStringValue(grTool.name);
 
 		if (strToolName.indexOf(strAgentName + ' - ') != 0)
@@ -63,14 +73,14 @@ If a Tool is re-used across multiple AI Agents, the Tool must be copied and henc
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-03-04 11:01:37</sys_created_on>
         <sys_id>7178e5a73b1f3a1062bf612c95e45ad1</sys_id>
-        <sys_mod_count>4</sys_mod_count>
+        <sys_mod_count>6</sys_mod_count>
         <sys_name>CodeSanity - AI Agent Tool Structure</sys_name>
         <sys_package display_value="CodeSanity WORK IN PROGRESS" source="x_snc_codesanity">8ed42c23dbad0510bcced03cd39619ce</sys_package>
         <sys_policy/>
         <sys_scope display_value="CodeSanity WORK IN PROGRESS">8ed42c23dbad0510bcced03cd39619ce</sys_scope>
         <sys_update_name>scan_table_check_7178e5a73b1f3a1062bf612c95e45ad1</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-03-04 11:25:52</sys_updated_on>
+        <sys_updated_on>2026-03-12 18:20:54</sys_updated_on>
         <table>sn_aia_agent_tool_m2m</table>
         <use_manifest>false</use_manifest>
     </scan_table_check>
