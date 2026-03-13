@@ -23,6 +23,12 @@ If a Tool is re-used across multiple AI Agents, the Tool must be copied and henc
 
 	if (x_snc_codesanity.IsCheckApplicableToRecord())
 	{
+
+		if (GlidePluginManager.isActive('sn_genai_platform') == false)
+		{
+			return;
+		}
+
 		var GetRecord = x_snc_devtools.GetRecord;
 		var IsValidRecord = x_snc_devtools.IsValidRecord;
 		var GetStringValue = x_snc_devtools.GetStringValue;
@@ -73,14 +79,14 @@ If a Tool is re-used across multiple AI Agents, the Tool must be copied and henc
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-03-04 11:01:37</sys_created_on>
         <sys_id>7178e5a73b1f3a1062bf612c95e45ad1</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>7</sys_mod_count>
         <sys_name>CodeSanity - AI Agent Tool Structure</sys_name>
         <sys_package display_value="CodeSanity WORK IN PROGRESS" source="x_snc_codesanity">8ed42c23dbad0510bcced03cd39619ce</sys_package>
         <sys_policy/>
         <sys_scope display_value="CodeSanity WORK IN PROGRESS">8ed42c23dbad0510bcced03cd39619ce</sys_scope>
         <sys_update_name>scan_table_check_7178e5a73b1f3a1062bf612c95e45ad1</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-03-12 18:20:54</sys_updated_on>
+        <sys_updated_on>2026-03-13 17:37:50</sys_updated_on>
         <table>sn_aia_agent_tool_m2m</table>
         <use_manifest>false</use_manifest>
     </scan_table_check>
