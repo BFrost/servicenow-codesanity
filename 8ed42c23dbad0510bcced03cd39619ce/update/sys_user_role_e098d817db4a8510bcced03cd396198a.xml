@@ -4,6 +4,7 @@
         <can_delegate>true</can_delegate>
         <description>Provides access to the Code Sanity application</description>
         <elevated_privilege>false</elevated_privilege>
+        <federated_id>Ls9S+NtXo+rfEWbxvwJwflgqj3HFanyyDDu3rsLXeU4=</federated_id>
         <grantable>true</grantable>
         <includes_roles/>
         <name>x_snc_codesanity.admin</name>

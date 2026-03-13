@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="scan_table_check">
+    <scan_table_check action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <advanced>true</advanced>
+        <category>code_sanity</category>
+        <conditions table="sys_dictionary">internal_type=script^ORinternal_type=script_server^ORinternal_type=script_plain^ORinternal_type=script_client^sys_class_name=sys_dictionary^read_only=false^EQ<item display_table="sys_glide_object" display_value="Script" endquery="false" field="internal_type" goto="false" newquery="false" operator="=" or="false" value="script"/>
+            <item endquery="false" field="internal_type" goto="false" newquery="false" operator="=" or="true" value="script_server"/>
+            <item endquery="false" field="internal_type" goto="false" newquery="false" operator="=" or="true" value="script_plain"/>
+            <item endquery="false" field="internal_type" goto="false" newquery="false" operator="=" or="true" value="script_client"/>
+            <item display_value="Dictionary Entry" endquery="false" field="sys_class_name" goto="false" newquery="false" operator="=" or="false" value="sys_dictionary"/>
+            <item endquery="false" field="read_only" goto="false" newquery="false" operator="=" or="false" value="false"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </conditions>
+        <description>A script field can be part of custom tables or added to existing tables for various reasons. Any server-side script execution however is a potential vulnerability. Editing server-side executable scripts should be limited to users that have the admin role - even if the field is contained in a record that can be edited by non-admin users.</description>
+        <documentation_url/>
+        <finding_type>scan_finding</finding_type>
+        <name>CodeSanity - Script Field Access</name>
+        <priority>1</priority>
+        <resolution_details>A "Deny Unless" ACL should be added for the script field that limits write access to users that have the admin role.</resolution_details>
+        <run_condition/>
+        <score_max>100</score_max>
+        <score_min>0</score_min>
+        <score_scale>1</score_scale>
+        <script><![CDATA[(function (engine) {
+
+	if (x_snc_codesanity.IsCheckApplicableToRecord())
+	{
+		var strType = x_snc_devtools.GetStringValue(current.internal_type);
+		if (strType.indexOf('script') != 0)
+		{
+			return;
+		}
+
+		if (current.read_only == true)
+		{
+			return;
+		}
+
+		var grACL = new GlideRecord('sys_security_acl');
+		grACL.addQuery('name', '=', current.name + '.' + current.element);
+		grACL.addQuery('active', '=', 'true');
+		grACL.addQuery('operation', '=', 'write');
+		grACL.addQuery('decision_type', '=', 'deny');
+		grACL.query();
+		if (grACL.getRowCount() < 1)
+		{
+			engine.finding.increment();
+			return;
+		}
+
+		var grRoleAdmin = x_snc_devtools.GetRoleRecord('admin');
+		if (x_snc_devtools.IsValidRecord(grRoleAdmin) == false)
+		{
+			return;
+		}
+
+		var bAdminRoleFound = false;
+		while (grACL.next())
+		{
+			var grAclRole = new GlideRecord('sys_security_acl_role');
+			grAclRole.addQuery('sys_security_acl','=',grACL.sys_id);
+			grAclRole.addQuery('sys_user_role', '=', grRoleAdmin.sys_id);
+			grAclRole.query();
+			if (grAclRole.getRowCount() > 0)
+			{
+				bAdminRoleFound = true;
+			}
+		}
+
+		if (bAdminRoleFound == false)
+		{
+			engine.finding.increment();
+		}
+	}
+
+})(engine);]]></script>
+        <short_description>Script fields must only be editable by admin users</short_description>
+        <sys_class_name>scan_table_check</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-03-11 17:23:17</sys_created_on>
+        <sys_id>f8520bb12b2f76909083fe395e91bf67</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>CodeSanity - Script Field Access</sys_name>
+        <sys_package display_value="CodeSanity" source="x_snc_codesanity">8ed42c23dbad0510bcced03cd39619ce</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CodeSanity">8ed42c23dbad0510bcced03cd39619ce</sys_scope>
+        <sys_update_name>scan_table_check_f8520bb12b2f76909083fe395e91bf67</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-03-11 18:29:27</sys_updated_on>
+        <table>sys_dictionary</table>
+        <use_manifest>false</use_manifest>
+    </scan_table_check>
+    <sys_translated_text action="delete_multiple" query="documentkey=f8520bb12b2f76909083fe395e91bf67"/>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>f8520bb12b2f76909083fe395e91bf67</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-03-11 17:23:16</sys_created_on>
+        <sys_id>cf330f352b2f76909083fe395e91bf07</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-03-11 17:23:16</sys_updated_on>
+        <table>scan_table_check</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>
